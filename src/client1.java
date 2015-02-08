@@ -1,6 +1,8 @@
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -11,13 +13,35 @@ public class client1
 {
     public void execMission(String pwd, String fileName, String serverIP, String port, String RSA)
     {
+        PrivateKey privateKey = (PrivateKey) deserialize("c1i.ser");
         byte[] file = readFile(fileName);
         byte[] cipherText = encryptAES(pwd.getBytes(Charset.forName("UTF-8")), file);
         byte[] hash = getHash(file);
-        byte[] eHash = encryptRSA(hash, (PrivateKey) deserialize("c1i.ser"));
+        byte[] eHash = encryptRSA(hash, privateKey);
+        byte[] ePwd = encryptRSA(pwd.getBytes(Charset.forName("UTF-8")), privateKey);
         System.out.printf("size of file: %d   size of cipher text: %d\n", file.length, cipherText.length);
         System.out.printf("size of hash: %d\n", hash.length);
         System.out.printf("size of ehash: %d\n", eHash.length);
+        System.out.printf("size of ePwd: %d\n", ePwd.length);
+    }
+
+    // order" byte[] ePwd, byte[] cipherText, byte[] eHash
+    private void sendBundle(Cargo bundle, String serverIP, String portNum)
+    {
+        try
+        {
+            int port = Integer.parseInt(portNum);
+            Socket sock = new Socket(serverIP, port);
+            ObjectOutputStream c2s = new ObjectOutputStream(sock.getOutputStream());
+            c2s.writeObject(bundle);
+            c2s.close();
+        } catch (UnknownHostException e)
+        {
+            e.printStackTrace();
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private byte[] encryptAES(byte[] pwd, byte[] file)

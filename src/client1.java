@@ -25,7 +25,7 @@ public class client1
         System.out.printf("size of ePwd: %d\n", ePwd.length);
     }
 
-    // order" byte[] ePwd, byte[] cipherText, byte[] eHash
+    // order: byte[] ePwd, byte[] cipherText, byte[] eHash
     private void sendBundle(Cargo bundle, String serverIP, String portNum)
     {
         try

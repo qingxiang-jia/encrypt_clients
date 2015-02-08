@@ -1,11 +1,10 @@
 import javax.crypto.*;
-import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.KeySpec;
 
 public class client1
 {
@@ -13,7 +12,9 @@ public class client1
     {
         byte[] file = readFile(fileName);
         byte[] cipherText = enryptAES(pwd.getBytes(Charset.forName("UTF-8")), file);
+        byte[] hash = getHash(file);
         System.out.printf("size of file: %d   size of cipher text: %d\n", file.length, cipherText.length);
+        System.out.printf("size of hash: %d\n", hash.length);
     }
 
     private byte[] enryptAES(byte[] pwd, byte[] file)
@@ -63,6 +64,20 @@ public class client1
             e.printStackTrace();
         }
         return fileInBytes;
+    }
+
+    private byte[] getHash(byte[] file)
+    {
+        try
+        {
+            MessageDigest hasher = MessageDigest.getInstance("SHA-256");
+            hasher.update(file);
+            return hasher.digest();
+        } catch (NoSuchAlgorithmException e)
+        {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     // quick test

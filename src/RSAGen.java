@@ -13,12 +13,6 @@ public class RSAGen
     {
         try
         {
-//            FileOutputStream stream1 = new FileOutputStream(fn+"_pub");
-//            stream1.write(pair.getPublic().getEncoded());
-//            stream1.close();
-//            FileOutputStream stream2 = new FileOutputStream(fn+"_pri");
-//            stream2.write(pair.getPublic().getEncoded());
-//            stream2.close();
             FileOutputStream fout;
             ObjectOutputStream oout;
 
@@ -61,7 +55,7 @@ public class RSAGen
     public static void main(String[] args) throws Exception
     {
         RSAGen gen = new RSAGen();
-        gen.gen("c2s");
+        gen.gen("c2");
 
         FileInputStream fin;
         ObjectInputStream oin;

@@ -5,21 +5,20 @@ import java.nio.channels.*;
 import java.util.Iterator;
 import java.util.Set;
 
-public class server
+// client2 listens to port2 for incoming file
+public class client2
 {
     boolean shouldRun;
-    byte[] serverData;
-
-    public void runServer(int port1, int port2, String client2IP, char mode)
+    public void run(int port2)
     {
         try
         {
-            ServerSocketChannel s2c1 = ServerSocketChannel.open();
-            s2c1.socket().bind(new InetSocketAddress(port1));
-            s2c1.configureBlocking(false);
+            ServerSocketChannel c22s = ServerSocketChannel.open();
+            c22s.socket().bind(new InetSocketAddress(port2));
+            c22s.configureBlocking(false);
 
             Selector selector = Selector.open();
-            SelectionKey fromC1 = s2c1.register(selector, SelectionKey.OP_READ);
+            SelectionKey fromS = c22s.register(selector, SelectionKey.OP_READ);
 
             while (shouldRun)
             {
@@ -32,46 +31,34 @@ public class server
                 while (iter.hasNext()) // serve each client one after another
                 {
                     SelectionKey key = iter.next();
-                    if (key.isReadable() && key == fromC1)
-                        serveClient1(key.channel(), client2IP, port2, mode);
+                    if (key.isReadable() && key == fromS)
+                        validation(key.channel());
                 }
                 iter.remove(); // this client is served, remove it from the set
             }
-
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             e.printStackTrace();
         }
     }
 
-    private void serveClient1(SelectableChannel selectableChannel, String client2IP, int port2, char mode)
+    // order: byte[] ePwd, byte[] cipherText, byte[] eHash
+    private void validation(SelectableChannel selectableChannel)
     {
         try
         {
             SocketChannel toClient1 = ((ServerSocketChannel) selectableChannel).accept();
             ObjectInputStream ois = new ObjectInputStream(toClient1.socket().getInputStream());
             Cargo bundle = (Cargo) ois.readObject();
-            if (mode == 'u')
-                bundle.cipherText = this.serverData; // malicious server
-            Net net = new Net();
-            net.sendBundle(bundle, client2IP, port2); // pass the packet to client2
-        }
-        catch (IOException e)
+            System.out.printf("ePwd size: %d   cipherText size: %d   eHash size: %d\n", bundle.ePwd.length, bundle.cipherText.length, bundle.eHash.length);
+        } catch (IOException e)
         {
             e.printStackTrace();
-        }
-        catch (ClassNotFoundException e)
+        } catch (ClassNotFoundException e)
         {
             e.printStackTrace();
         }
     }
 
-    // quick test
-    public static void main(String[] args)
-    {
-        server serv = new server();
-
-    }
 
 }

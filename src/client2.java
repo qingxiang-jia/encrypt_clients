@@ -2,6 +2,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.InetSocketAddress;
 import java.nio.channels.*;
+import java.security.PublicKey;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -52,6 +54,17 @@ public class client2
             ObjectInputStream ois = new ObjectInputStream(toClient1.socket().getInputStream());
             Cargo bundle = (Cargo) ois.readObject();
             System.out.printf("ePwd size: %d   cipherText size: %d   eHash size: %d\n", bundle.ePwd.length, bundle.cipherText.length, bundle.eHash.length);
+
+            PublicKey c1p = (PublicKey) Util.deserialize("c1p.ser");
+            System.out.println(c1p.toString());
+            byte[] hash = Crypto.decryptRSA(bundle.eHash, c1p);
+            byte[] pwd = Crypto.decryptRSA(bundle.ePwd, c1p);
+            byte[] file = Crypto.decryptAES(pwd, bundle.cipherText);
+            byte[] dHash = Crypto.getHash(file);
+            if (Arrays.equals(hash, dHash))
+                System.out.println("Verification Passed");
+            else
+                System.out.println("Verification Failed");
         } catch (IOException e)
         {
             e.printStackTrace();

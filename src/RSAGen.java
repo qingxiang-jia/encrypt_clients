@@ -57,17 +57,18 @@ public class RSAGen
         RSAGen gen = new RSAGen();
         gen.gen("c2");
 
+        // verification
         FileInputStream fin;
         ObjectInputStream oin;
 
-        fin = new FileInputStream("c1i.ser");
+        fin = new FileInputStream("c2i.ser");
         oin = new ObjectInputStream(fin);
         PrivateKey privateKey = (PrivateKey) oin.readObject();
         oin.close();
         fin.close();
         System.out.println(privateKey.toString());
 
-        fin = new FileInputStream("c1p.ser");
+        fin = new FileInputStream("c2p.ser");
         oin = new ObjectInputStream(fin);
         PublicKey publicKey = (PublicKey) oin.readObject();
         oin.close();

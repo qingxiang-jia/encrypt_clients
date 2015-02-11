@@ -18,7 +18,7 @@ public class client2
             c22s.configureBlocking(false);
 
             Selector selector = Selector.open();
-            SelectionKey fromS = c22s.register(selector, SelectionKey.OP_READ);
+            SelectionKey fromS = c22s.register(selector, SelectionKey.OP_ACCEPT);
 
             while (shouldRun)
             {
@@ -31,7 +31,8 @@ public class client2
                 while (iter.hasNext()) // serve each client one after another
                 {
                     SelectionKey key = iter.next();
-                    if (key.isReadable() && key == fromS)
+                    System.out.println("got data from client1");
+                    if (key == fromS)
                         validation(key.channel());
                 }
                 iter.remove(); // this client is served, remove it from the set
@@ -58,6 +59,13 @@ public class client2
         {
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args)
+    {
+        client2 c2 = new client2();
+        c2.shouldRun = true;
+        c2.run(Integer.parseInt(args[0]));
     }
 
 

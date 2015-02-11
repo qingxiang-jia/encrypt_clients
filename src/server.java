@@ -19,7 +19,7 @@ public class server
             s2c1.configureBlocking(false);
 
             Selector selector = Selector.open();
-            SelectionKey fromC1 = s2c1.register(selector, SelectionKey.OP_READ);
+            SelectionKey fromC1 = s2c1.register(selector, SelectionKey.OP_ACCEPT);
 
             while (shouldRun)
             {
@@ -32,7 +32,8 @@ public class server
                 while (iter.hasNext()) // serve each client one after another
                 {
                     SelectionKey key = iter.next();
-                    if (key.isReadable() && key == fromC1)
+                    System.out.println("got data from client1");
+                    if (key == fromC1)
                         serveClient1(key.channel(), client2IP, port2, mode);
                 }
                 iter.remove(); // this client is served, remove it from the set
@@ -56,6 +57,7 @@ public class server
                 bundle.cipherText = this.serverData; // malicious server
             Net net = new Net();
             net.sendBundle(bundle, client2IP, port2); // pass the packet to client2
+            System.out.println("data sent to client2");
         }
         catch (IOException e)
         {
@@ -71,7 +73,10 @@ public class server
     public static void main(String[] args)
     {
         server serv = new server();
-
+        serv.shouldRun = true;
+//        serv.runServer(8087, 8088, "127.0.0.1", 't');
+        serv.runServer(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], args[3].charAt(0));
     }
+
 
 }

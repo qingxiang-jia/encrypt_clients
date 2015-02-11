@@ -1,21 +1,27 @@
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.InvalidKeyException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
+import java.security.*;
 
 public class Crypto
 {
     public static byte[] encryptAES(byte[] pwd, byte[] file)
     {
-        byte[] cipherText = null;
+        return AES(pwd, file, 1);
+    }
+
+    public static byte[] decryptAES(byte[] pwd, byte[] file)
+    {
+        return AES(pwd, file, 2);
+    }
+
+    private static byte[] AES(byte[] pwd, byte[] file, int mode)
+    {
         try
         {
             Cipher AESCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             SecretKey AESKey = new SecretKeySpec(pwd, "AES");
-            AESCipher.init(Cipher.ENCRYPT_MODE, AESKey);
-            cipherText = AESCipher.doFinal(file);
+            AESCipher.init(mode, AESKey);
+            return AESCipher.doFinal(file);
         } catch (NoSuchAlgorithmException e)
         {
             e.printStackTrace();
@@ -32,17 +38,27 @@ public class Crypto
         {
             e.printStackTrace();
         }
-        return cipherText;
+        return null;
     }
 
-    public static byte[] encryptRSA(byte[] file, PrivateKey privateKey)
-    {// file here is the plain text hash
+    public static byte[] encryptRSA(byte[] file, Key key)
+    {
+        return RSA(file, key, 1);
+    }
+
+    public static byte[] decryptRSA(byte[] file, Key key)
+    {
+        return RSA(file, key, 2);
+    }
+
+    private static byte[] RSA(byte[] content, Key key, int mode)
+    {
         try
         {
-            Cipher RSAcipher = Cipher.getInstance("RSA");
-            RSAcipher.init(Cipher.ENCRYPT_MODE, privateKey);
-            return RSAcipher.doFinal(file);
-        } catch (NoSuchAlgorithmException e)
+            Cipher RSACipher = Cipher.getInstance("RSA");
+            RSACipher.init(mode, key);
+            return RSACipher.doFinal(content);
+        }  catch (NoSuchAlgorithmException e)
         {
             e.printStackTrace();
         } catch (NoSuchPaddingException e)

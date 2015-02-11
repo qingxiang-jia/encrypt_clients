@@ -56,7 +56,6 @@ public class client2
             System.out.printf("ePwd size: %d   cipherText size: %d   eHash size: %d\n", bundle.ePwd.length, bundle.cipherText.length, bundle.eHash.length);
 
             PublicKey c1p = (PublicKey) Util.deserialize("c1p.ser");
-            System.out.println(c1p.toString());
             byte[] hash = Crypto.decryptRSA(bundle.eHash, c1p);
             byte[] pwd = Crypto.decryptRSA(bundle.ePwd, c1p);
             byte[] file = Crypto.decryptAES(pwd, bundle.cipherText);

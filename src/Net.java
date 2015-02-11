@@ -13,10 +13,12 @@ public class Net
 
     public void sendBundle(Cargo bundle, String serverIP, int portNum)
     {
+        Socket sock = null;
+        ObjectOutputStream meToDest = null;
         try
         {
-            Socket sock = new Socket(serverIP, portNum);
-            ObjectOutputStream meToDest = new ObjectOutputStream(sock.getOutputStream());
+            sock = new Socket(serverIP, portNum);
+            meToDest = new ObjectOutputStream(sock.getOutputStream());
             meToDest.writeObject(bundle);
             meToDest.close();
             sock.close();
@@ -26,6 +28,18 @@ public class Net
         } catch (IOException e)
         {
             e.printStackTrace();
+        } finally
+        {
+            try
+            {
+                if (meToDest != null)
+                    meToDest.close();
+                if (sock != null)
+                    sock.close();
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 }

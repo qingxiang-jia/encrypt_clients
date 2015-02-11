@@ -2,9 +2,9 @@ import java.io.*;
 
 public class Util
 {
-    public static byte[] readFile(String filename)
+    public static byte[] readFile(String fileName)
     {
-        File file = new File(filename);
+        File file = new File(fileName);
         FileInputStream stream = null;
         byte[] fileInBytes = new byte[(int) file.length()];
         try
@@ -12,23 +12,61 @@ public class Util
             stream = new FileInputStream(file);
             int count = stream.read(fileInBytes);
             System.out.println("Read in " + count + " bytes");
-            stream.close();
         } catch (FileNotFoundException e)
         {
             e.printStackTrace();
         } catch (IOException e)
         {
             e.printStackTrace();
+        } finally
+        {
+            try
+            {
+                if (stream != null)
+                    stream.close();
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+            }
         }
         return fileInBytes;
     }
 
-    public static Object deserialize(String fileName)
+    public static void writeFile(byte[] data, String fileName)
     {
+        File file = new File(fileName);
+        FileOutputStream stream = null;
         try
         {
-            FileInputStream fin = new FileInputStream(fileName);
-            ObjectInputStream oin = new ObjectInputStream(fin);
+            stream = new FileOutputStream(file);
+            stream.write(data);
+        } catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        } finally
+        {
+            try
+            {
+                if (stream != null)
+                    stream.close();
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static Object deserialize(String fileName)
+    {
+        FileInputStream fin = null;
+        ObjectInputStream oin = null;
+        try
+        {
+            fin = new FileInputStream(fileName);
+            oin = new ObjectInputStream(fin);
             Object obj = oin.readObject();
             oin.close();
             fin.close();
@@ -39,6 +77,18 @@ public class Util
         } catch (ClassNotFoundException e)
         {
             e.printStackTrace();
+        } finally
+        {
+            try
+            {
+                if (oin != null)
+                    oin.close();
+                if (fin != null)
+                    fin.close();
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+            }
         }
         return null;
     }

@@ -21,7 +21,7 @@ public class Crypto
         {
             Cipher AESCipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             SecretKey AESKey = new SecretKeySpec(pwd, "AES");
-            AESCipher.init(mode, AESKey);
+            AESCipher.init(mode, AESKey, new IvParameterSpec(new byte[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
             return AESCipher.doFinal(file);
         } catch (NoSuchAlgorithmException e)
         {
@@ -36,6 +36,9 @@ public class Crypto
         {
             e.printStackTrace();
         } catch (BadPaddingException e)
+        {
+            e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e)
         {
             e.printStackTrace();
         }

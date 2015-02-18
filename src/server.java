@@ -9,7 +9,7 @@ import java.util.Set;
  * Server that takes a file from client1 and forwards to client2
  * Can be malicious in untrusted mode (args[3])
  */
-public class server
+public class server implements InputCheck
 {
     boolean shouldRun; // set to true to run
     byte[] serverData; // in untrusted mode, use this data to tamper the packet from client1
@@ -141,9 +141,7 @@ public class server
     {
         server serv = new server();
         serv.shouldRun = true;
-//        serv.runServer(8087, 8088, "127.0.0.1", 't');
         serv.runWithInputCheck(args);
-//        serv.runServer(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], args[3].charAt(0));
     }
 
 

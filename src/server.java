@@ -16,6 +16,7 @@ public class server
 
     /**
      * Using selector so that it has ability to handle multiple clients (not required)
+     *
      * @param port1     Port number for client1 to contact
      * @param port2     Port number of client2
      * @param client2IP IP address of client2
@@ -57,8 +58,49 @@ public class server
         }
     }
 
+    public void runWithInputCheck(String[] args)
+    {
+        int port1, port2;
+        String client2IP;
+        char mode;
+        boolean parameterOK = false;
+        try
+        {
+            port1 = Integer.parseInt(args[0]);
+            port2 = Integer.parseInt(args[1]);
+            client2IP = args[2];
+            mode = args[3].charAt(0);
+            System.out.println(mode);
+            parameterOK = true;
+            if (port1 > 0 && port2 > 0 && (mode == 't' || mode == 'u') && (client2IP != null))
+                runServer(port1, port2, client2IP, mode);
+            else
+            {
+                parameterOK = false;
+                if (port1 <= 0 || port2 <= 0)
+                    System.out.println("Port number is invalid.");
+                if (mode != 't' && mode != 'u')
+                    System.out.println("mode has to be t or u.");
+            }
+        }
+        catch (NumberFormatException e)
+        {
+            System.out.println("Port number needs to be integers.");
+        }
+        catch (IndexOutOfBoundsException e)
+        {
+            System.out.println("Number of parameters should be 4.");
+        }
+        finally
+        {
+            if (!parameterOK)
+                System.out.println("usage: server <port listen to client1> <port client2 listens> <client2 IP> <mode>");
+        }
+    }
+
     /**
      * In untrusted mode, swap ciphertext with serverData, and then forwards to client2; otherwise, just forwards to client2.
+     *
      * @param selectableChannel Channel that connects client1 and server
      * @param client2IP         IP address of client2
      * @param port2             Port that client2 is running on
@@ -96,7 +138,8 @@ public class server
         server serv = new server();
         serv.shouldRun = true;
 //        serv.runServer(8087, 8088, "127.0.0.1", 't');
-        serv.runServer(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], args[3].charAt(0));
+        serv.runWithInputCheck(args);
+//        serv.runServer(Integer.parseInt(args[0]), Integer.parseInt(args[1]), args[2], args[3].charAt(0));
     }
 
 

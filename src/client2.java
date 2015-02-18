@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  * client2 listens to port2 for incoming file, decrypts the file, checks for validity
  */
-public class client2
+public class client2 implements InputCheck
 {
     boolean shouldRun; // set to true to run
     public void run(int port2)
@@ -99,11 +99,36 @@ public class client2
         }
     }
 
+    public void runWithInputCheck(String[] args)
+    {
+        if (args.length != 1)
+        {
+            System.out.println("Number of parameters should be 1.");
+            System.out.println("usage: client2 <port number>");
+            System.exit(0);
+        } else
+        {
+            try
+            {
+                int port = Integer.parseInt(args[0]);
+                if (port <= 0)
+                    throw new NumberFormatException();
+                run(port);
+            } catch (NumberFormatException e)
+            {
+                System.out.println("Port number is invalid.");
+            } finally
+            {
+                System.out.println("usage: client2 <port number>");
+            }
+        }
+    }
+
     public static void main(String[] args)
     {
         client2 c2 = new client2();
         c2.shouldRun = true;
-        c2.run(Integer.parseInt(args[0]));
+//        c2.run(Integer.parseInt(args[0]));
+        c2.runWithInputCheck(args);
     }
-
 }

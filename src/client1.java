@@ -43,7 +43,8 @@ public class client1 implements InputCheck
             fileName = args[1];
             serverIP = args[2];
             port = args[3];
-            int lookForException = Integer.parseInt(port);
+            if (Integer.parseInt(port) <= 0)
+                throw new NumberFormatException();
             c1i = args[4];
             parameterOK = true;
             execMission(pwd, fileName, serverIP, port, c1i);
@@ -62,12 +63,9 @@ public class client1 implements InputCheck
         }
     }
 
-
     public static void main(String[] args)
     {
         client1 c1 = new client1();
-        // c1.execMission("1234567887654321", "liukanshan.jpg", "10.0.0.1", "8087", "c1i.ser");
-//        c1.execMission(args[0], args[1], args[2], args[3], args[4]);
         c1.runWithInputCheck(args);
     }
 

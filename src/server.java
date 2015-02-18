@@ -50,7 +50,6 @@ public class server implements InputCheck
                 }
                 iter.remove(); // this client is served, remove it from the set
             }
-
         }
         catch (IOException e)
         {

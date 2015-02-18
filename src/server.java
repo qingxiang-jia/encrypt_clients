@@ -24,13 +24,15 @@ public class server implements InputCheck
      */
     public void runServer(int port1, int port2, String client2IP, char mode)
     {
+        ServerSocketChannel s2c1 = null;
+        Selector selector = null;
         try
         {
-            ServerSocketChannel s2c1 = ServerSocketChannel.open(); // open a server-to-client SocketChannel
+            s2c1 = ServerSocketChannel.open(); // open a server-to-client SocketChannel
             s2c1.socket().bind(new InetSocketAddress(port1)); // listens on port1 for client1 to contact
             s2c1.configureBlocking(false); // must be in non-blocking mode since using selector
 
-            Selector selector = Selector.open();
+            selector = Selector.open();
             SelectionKey fromC1 = s2c1.register(selector, SelectionKey.OP_ACCEPT); // select when accepted
 
             while (shouldRun) // waiting for client to contact
@@ -53,7 +55,19 @@ public class server implements InputCheck
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            System.out.println("Either ServerSocketChannel failed to open, or to bind, or Selector failed to open.");
+        } finally // close channels, sockets, selector
+        {
+            try
+            {
+                if (selector != null)
+                    selector.close();
+                if (s2c1 != null)
+                    s2c1.close();
+            } catch (IOException e)
+            {
+                System.out.println("Failed to close ServerSocketChannel and/or Selector.");
+            }
         }
     }
 

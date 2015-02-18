@@ -80,10 +80,10 @@ public class client2 implements InputCheck
 
         } catch (IOException e)
         {
-            e.printStackTrace();
+            System.out.println("Either ServerSocketChannel failed to accept; or ObjectInputStream failed to get stream, or failed to read out the object.");
         } catch (ClassNotFoundException e)
         {
-            e.printStackTrace();
+            System.out.println("ObjectInputStream did read the data, but there is no corresponding class found.");
         } finally
         {
             try

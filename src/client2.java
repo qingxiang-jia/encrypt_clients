@@ -1,3 +1,4 @@
+import javax.crypto.IllegalBlockSizeException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.InetSocketAddress;
@@ -48,10 +49,12 @@ public class client2
     // order: byte[] ePwd, byte[] cipherText, byte[] eHash
     private void validation(SelectableChannel selectableChannel)
     {
+        SocketChannel toClient1 = null;
+        ObjectInputStream ois = null;
         try
         {
-            SocketChannel toClient1 = ((ServerSocketChannel) selectableChannel).accept();
-            ObjectInputStream ois = new ObjectInputStream(toClient1.socket().getInputStream());
+            toClient1 = ((ServerSocketChannel) selectableChannel).accept();
+            ois = new ObjectInputStream(toClient1.socket().getInputStream());
             Cargo bundle = (Cargo) ois.readObject();
             System.out.printf("ePwd size: %d   cipherText size: %d   eHash size: %d\n", bundle.ePwd.length, bundle.cipherText.length, bundle.eHash.length);
 
@@ -59,17 +62,35 @@ public class client2
             byte[] hash = Crypto.decryptRSA(bundle.eHash, c1p);
             byte[] pwd = Crypto.decryptRSA(bundle.ePwd, c1p);
             byte[] file = Crypto.decryptAES(pwd, bundle.cipherText);
-            byte[] dHash = Crypto.getHash(file);
-            if (Arrays.equals(hash, dHash))
+            byte[] dHash = null;
+            if (file != null)
+                dHash = Crypto.getHash(file);
+            if (dHash != null && Arrays.equals(hash, dHash))
+            {
                 System.out.println("Verification Passed");
+                Util.writeFile(file, "client2data");
+            }
             else
                 System.out.println("Verification Failed");
+
         } catch (IOException e)
         {
             e.printStackTrace();
         } catch (ClassNotFoundException e)
         {
             e.printStackTrace();
+        } finally
+        {
+            try
+            {
+                if (ois != null)
+                    ois.close();
+                if (toClient1 != null)
+                    toClient1.close();
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 

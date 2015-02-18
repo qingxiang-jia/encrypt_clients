@@ -1,7 +1,16 @@
 import java.io.*;
 
+/**
+ * Utility class than handles all IOs.
+ */
 public class Util
 {
+    /**
+     * Reads in a file, and return its byte array representation.
+     * Java 1.7+ built-in class can handle this but CLIC machines have only JVM 1.6.
+     * @param fileName  The file to be read
+     * @return  Byte array that contains all bytes of the file.
+     */
     public static byte[] readFile(String fileName)
     {
         File file = new File(fileName);
@@ -32,6 +41,11 @@ public class Util
         return fileInBytes;
     }
 
+    /**
+     * Writes data into a file.
+     * @param data      Byte array contains data
+     * @param fileName  File name
+     */
     public static void writeFile(byte[] data, String fileName)
     {
         File file = new File(fileName);
@@ -40,6 +54,7 @@ public class Util
         {
             stream = new FileOutputStream(file);
             stream.write(data);
+            System.out.println(data.length + " written");
         } catch (FileNotFoundException e)
         {
             e.printStackTrace();
@@ -59,6 +74,11 @@ public class Util
         }
     }
 
+    /**
+     * Deserializes a file.
+     * @param fileName  Path to the file
+     * @return  An object that just been deserialized
+     */
     public static Object deserialize(String fileName)
     {
         FileInputStream fin = null;

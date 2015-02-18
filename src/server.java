@@ -54,7 +54,10 @@ public class server
             ObjectInputStream ois = new ObjectInputStream(toClient1.socket().getInputStream());
             Cargo bundle = (Cargo) ois.readObject();
             if (mode == 'u')
+            {
+                this.serverData = Util.readFile("serverdataSameSize");
                 bundle.cipherText = this.serverData; // malicious server
+            }
             Net net = new Net();
             net.sendBundle(bundle, client2IP, port2); // pass the packet to client2
             System.out.println("data sent to client2");

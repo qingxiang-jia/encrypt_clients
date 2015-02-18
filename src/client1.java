@@ -1,22 +1,35 @@
 import java.nio.charset.Charset;
 import java.security.PrivateKey;
 
+/**
+ * client1 encrypts file (args[1]) using password (args[0]). client1 sends file to server (arg[2])
+ * at port args[3]. The private key is args[4].
+ */
 public class client1
 {
+    /**
+     * Encrypts file. Sends it to server.
+     * @param pwd       Password
+     * @param fileName  File (to be sent) name
+     * @param serverIP  IP address
+     * @param port      Port number
+     * @param c1i       Path of private key
+     */
     public void execMission(String pwd, String fileName, String serverIP, String port, String c1i)
     {
-        PrivateKey privateKey = (PrivateKey) Util.deserialize(c1i);
-        Net net = new Net();
-        byte[] file = Util.readFile(fileName);
-        byte[] cipherText = Crypto.encryptAES(pwd.getBytes(Charset.forName("UTF-8")), file);
-        byte[] hash = Crypto.getHash(file);
-        byte[] eHash = Crypto.encryptRSA(hash, privateKey);
-        byte[] ePwd = Crypto.encryptRSA(pwd.getBytes(Charset.forName("UTF-8")), privateKey);
+        PrivateKey privateKey = (PrivateKey) Util.deserialize(c1i); // get private key
+        Net net = new Net(); // helper function that handles network related operation
+        byte[] file = Util.readFile(fileName); // read in file, could be simpler, but CLIC machine runs Java 1.6
+        byte[] cipherText = Crypto.encryptAES(pwd.getBytes(Charset.forName("UTF-8")), file); // encrypt file using password
+//        Util.writeFile(cipherText, "serverdataSameSize");
+        byte[] hash = Crypto.getHash(file); // get hash of the file (before encryption)
+        byte[] eHash = Crypto.encryptRSA(hash, privateKey); // using private key to sign the file (encrypt hash)
+        byte[] ePwd = Crypto.encryptRSA(pwd.getBytes(Charset.forName("UTF-8")), privateKey); // using private key to encrypt password
         System.out.printf("size of file: %d   size of cipher text: %d\n", file.length, cipherText.length);
         System.out.printf("size of hash: %d\n", hash.length);
         System.out.printf("size of ehash: %d\n", eHash.length);
         System.out.printf("size of ePwd: %d\n", ePwd.length);
-        net.sendBundle(new Cargo(ePwd, cipherText, eHash), serverIP, port);
+        net.sendBundle(new Cargo(ePwd, cipherText, eHash), serverIP, port); // send encrypted password, ciphertext, and signature
         System.out.println("sent");
     }
 

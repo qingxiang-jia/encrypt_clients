@@ -58,6 +58,10 @@ public class server
         }
     }
 
+    /**
+     * Validates inpute parameter before server starts.
+     * @param args Commandline input
+     */
     public void runWithInputCheck(String[] args)
     {
         int port1, port2;

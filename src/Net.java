@@ -39,10 +39,10 @@ public class Net
             sock.close();
         } catch (UnknownHostException e)
         {
-            e.printStackTrace();
+            System.out.println("The host is unknown.");
         } catch (IOException e)
         {
-            e.printStackTrace();
+            System.out.println("Several possibilities caused the error:\n1) Socket failed to create.\n2) getOutputStream failed.\n3) Failed to send bundle.\n4) Failed to close the stream or socket.");
         } finally
         {
             try
@@ -53,7 +53,7 @@ public class Net
                     sock.close();
             } catch (IOException e)
             {
-                e.printStackTrace();
+                System.out.println("Failed to close the stream or socket.");
             }
         }
     }

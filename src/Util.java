@@ -23,10 +23,10 @@ public class Util
             System.out.println("Read in " + count + " bytes");
         } catch (FileNotFoundException e)
         {
-            e.printStackTrace();
+            System.out.println("File "+fileName+" not found.");
         } catch (IOException e)
         {
-            e.printStackTrace();
+            System.out.println("Cannot read " + fileName + ".");
         } finally
         {
             try
@@ -35,7 +35,7 @@ public class Util
                     stream.close();
             } catch (IOException e)
             {
-                e.printStackTrace();
+                System.out.println("Failed to close stream.");
             }
         }
         return fileInBytes;
@@ -57,10 +57,10 @@ public class Util
             System.out.println(data.length + " written");
         } catch (FileNotFoundException e)
         {
-            e.printStackTrace();
+            System.out.println("File "+fileName+" not found.");
         } catch (IOException e)
         {
-            e.printStackTrace();
+            System.out.println("Failed to write data to file " + fileName);
         } finally
         {
             try
@@ -69,7 +69,7 @@ public class Util
                     stream.close();
             } catch (IOException e)
             {
-                e.printStackTrace();
+                System.out.println("Failed to close stream.");
             }
         }
     }
@@ -91,12 +91,15 @@ public class Util
             oin.close();
             fin.close();
             return obj;
+        } catch (FileNotFoundException e)
+        {
+            System.out.println("File "+fileName+" not found.");
         } catch (IOException e)
         {
-            e.printStackTrace();
+            System.out.println("Failed to create ObjectInputStream during deserialization.");
         } catch (ClassNotFoundException e)
         {
-            e.printStackTrace();
+            System.out.println("Cannot find a class for data acquired.");
         } finally
         {
             try
@@ -107,7 +110,7 @@ public class Util
                     fin.close();
             } catch (IOException e)
             {
-                e.printStackTrace();
+                System.out.println("Failed to close stream.");
             }
         }
         return null;

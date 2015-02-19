@@ -41,22 +41,22 @@ public class Crypto
             return AESCipher.doFinal(file); // return the encrypted/decrypted byte array
         } catch (NoSuchAlgorithmException e)
         {
-            e.printStackTrace();
+            System.out.println("Cannot find algorithm for AES.");
         } catch (NoSuchPaddingException e)
         {
-            e.printStackTrace();
+            System.out.println("AES: PKCS5Padding is invalid.");
         } catch (InvalidKeyException e)
         {
-            e.printStackTrace();
+            System.out.println("AES: Key is invalid.");
         } catch (IllegalBlockSizeException e)
         {
             System.out.println("The file to be en/decrypted has a size not of multiple of 16. The file is tampered!");
         } catch (BadPaddingException e)
         {
-            e.printStackTrace();
+            System.out.println("AES: PKCS5Padding is invalid.");
         } catch (InvalidAlgorithmParameterException e)
         {
-            e.printStackTrace();
+            System.out.println("AES: The IV is invalid.");
         }
         return null;
     }
@@ -93,19 +93,19 @@ public class Crypto
             return RSACipher.doFinal(content); // return the encrypted/decrypted file
         }  catch (NoSuchAlgorithmException e)
         {
-            e.printStackTrace();
+            System.out.println("Cannot find algorithm for RSA.");
         } catch (NoSuchPaddingException e)
         {
-            e.printStackTrace();
+            System.out.println("RSA: Cannot find the padding you specified.");
         } catch (InvalidKeyException e)
         {
-            e.printStackTrace();
+            System.out.println("RSA: Key is invalid.");
         } catch (IllegalBlockSizeException e)
         {
-            e.printStackTrace();
+            System.out.println("RSA: Wrong block size.");
         } catch (BadPaddingException e)
         {
-            e.printStackTrace();
+            System.out.println("RSA: Wrong padding.");
         }
         return null;
     }
@@ -124,7 +124,7 @@ public class Crypto
             return hasher.digest();
         } catch (NoSuchAlgorithmException e)
         {
-            e.printStackTrace();
+            System.out.println("Cannot find SHA-256.");
         }
         return null;
     }

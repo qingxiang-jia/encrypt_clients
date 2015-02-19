@@ -1,14 +1,26 @@
 import java.io.*;
 import java.security.*;
 
+/**
+ * Generates RSA keys.
+ */
 public class RSAGen
 {
+    /**
+     * Generates key pair.
+     * @param fn File name of the key pair
+     */
     public void gen(String fn)
     {
         KeyPair pair = genKeyPair();
         deserializeKeyPair(fn, pair);
     }
 
+    /**
+     * Deserialize the keys.
+     * @param fn    File name of which key will be stored
+     * @param pair  Key pair
+     */
     private void deserializeKeyPair(String fn, KeyPair pair)
     {
         try
@@ -36,6 +48,10 @@ public class RSAGen
         }
     }
 
+    /**
+     * Generates 2048-bit RSA key pair.
+     * @return  Key pair
+     */
     private KeyPair genKeyPair()
     {
         KeyPair pair = null;
@@ -51,7 +67,7 @@ public class RSAGen
         return pair;
     }
 
-    // quick test
+    // quick test: I used this to generate RSA keys
     public static void main(String[] args) throws Exception
     {
         RSAGen gen = new RSAGen();

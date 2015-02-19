@@ -21,7 +21,6 @@ public class client1 implements InputCheck
         Net net = new Net(); // helper function that handles network related operation
         byte[] file = Util.readFile(fileName); // read in file, could be simpler, but CLIC machine runs Java 1.6
         byte[] cipherText = Crypto.encryptAES(pwd.getBytes(Charset.forName("UTF-8")), file); // encrypt file using password
-//        Util.writeFile(cipherText, "serverdataSameSize");
         byte[] hash = Crypto.getHash(file); // get hash of the file (before encryption)
         byte[] eHash = Crypto.encryptRSA(hash, privateKey); // using private key to sign the file (encrypt hash)
         byte[] ePwd = Crypto.encryptRSA(pwd.getBytes(Charset.forName("UTF-8")), privateKey); // using private key to encrypt password
@@ -30,7 +29,6 @@ public class client1 implements InputCheck
         System.out.printf("size of ehash: %d\n", eHash.length);
         System.out.printf("size of ePwd: %d\n", ePwd.length);
         net.sendBundle(new Cargo(ePwd, cipherText, eHash), serverIP, port); // send encrypted password, ciphertext, and signature
-        System.out.println("sent");
     }
 
     public void runWithInputCheck(String[] args)

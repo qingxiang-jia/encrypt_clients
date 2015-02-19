@@ -87,7 +87,6 @@ public class server implements InputCheck
             port2 = Integer.parseInt(args[1]);
             client2IP = args[2];
             mode = args[3].charAt(0);
-            System.out.println(mode);
             parameterOK = true;
             if (port1 > 0 && port2 > 0 && (mode == 't' || mode == 'u') && (client2IP != null))
                 runServer(port1, port2, client2IP, mode);
@@ -132,7 +131,8 @@ public class server implements InputCheck
             Cargo bundle = (Cargo) ois.readObject();
             if (mode == 'u') // swap file if in untrusted mode
             {
-                this.serverData = Util.readFile("serverdataSameSize");
+                this.serverData = Util.readFile("serverdata");
+                System.out.println("maliciously swapped file");
                 bundle.cipherText = this.serverData; // malicious server
             }
             Net net = new Net();
@@ -156,6 +156,5 @@ public class server implements InputCheck
         serv.shouldRun = true;
         serv.runWithInputCheck(args);
     }
-
 
 }

@@ -37,12 +37,13 @@ public class Net
             meToDest.writeObject(bundle);
             meToDest.close();
             sock.close();
+            System.out.println("Sent");
         } catch (UnknownHostException e)
         {
             System.out.println("The host is unknown.");
         } catch (IOException e)
         {
-            System.out.println("Several possibilities caused the error:\n1) Socket failed to create.\n2) getOutputStream failed.\n3) Failed to send bundle.\n4) Failed to close the stream or socket.");
+            System.out.println("Server is down.");
         } finally
         {
             try
